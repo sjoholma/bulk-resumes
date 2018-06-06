@@ -1,0 +1,61 @@
+<html>
+  <head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Lato:300,400,900" rel="stylesheet">
+    <script type="text/javascript">
+      google.charts.load("current", { packages:["treemap"] });
+      // Set a callback to run when the Google Visualization API is loaded.
+      google.charts.setOnLoadCallback(drawChart);
+
+      var skills = [
+        $for(skills)$ { skill: '$skills.skill$', value: $skills.value$ },
+        $endfor$
+      ];
+
+      // Sort first by value and then by name
+      skills.sort(function (a, b) {
+        if (a.value === b.value) {
+          return a.skill.toUpperCase().localeCompare(b.skill.toUpperCase())
+        } else {
+          return b.value - a.value;
+        }
+      });
+
+      // Callback that creates and populates a data table,
+      // instantiates the chart, passes in the data and
+      // draws it.
+      function drawChart() {
+
+        var data = new google.visualization.DataTable();
+        data.addColumn('string', 'Skill');
+        data.addColumn('string', 'Parent');
+        data.addColumn('number', 'Value');
+        data.addColumn('number', 'Color');
+
+        data.addRow(["Skills", null, 0, 0]);
+
+        skills.forEach(function (element) {
+          data.addRow([element.skill, "Skills", element.value, element.value]);
+        });
+
+        var options = {
+          headerHeight: 0,
+          fontFamily: "Lato",
+          fontSize: skills.length > 10 ? 9 : 11,
+          maxColor: '#e9350f', // Redish
+          midColor: '##fb9d89', // Light Red
+          minColor: '#f9f1ef', // Almost White
+          width: "100%",
+          height: "100%"
+        };
+
+        var map = new google.visualization.TreeMap(document.getElementById("chart"));
+        map.draw(data, options);
+      }
+    </script>
+  </head>
+  <body>
+    <div id="chart"></div>
+  </body>
+</html>

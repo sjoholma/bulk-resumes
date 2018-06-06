@@ -1,0 +1,221 @@
+\documentclass[11pt,A4]{article}
+
+% Set footer height
+\usepackage[bottom=2.5cm]{geometry}
+% Drop paragraph indents
+\usepackage[parfill]{parskip}
+% Set default font
+\usepackage[default]{lato}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[nodisplayskipstretch]{setspace}
+
+\usepackage[none]{hyphenat}
+
+\usepackage[x11names]{xcolor}
+\definecolor{PrettyGray}{rgb}{0.925, 0.929, 0.929}
+\definecolor{AlmostBlack}{rgb}{0.2, 0.2, 0.2}
+\definecolor{Redish}{rgb}{0.913, 0.207, 0.04}
+
+% Define the folder where images and aux files are stored
+\usepackage{graphicx}
+\graphicspath{{resumes/}{aux/}}
+% Support scandics in filenames
+\usepackage[encoding,filenameencoding=utf8]{grffile}
+
+% Introduce new command for avoiding page break
+\newenvironment{absolutelynopagebreak}
+  {\par\nobreak\vfil\penalty0\vfilneg
+   \vtop\bgroup}
+  {\par\xdef\tpd{\the\prevdepth}\egroup
+   \prevdepth=\tpd}
+
+% Use fancy header and footer
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+% Clear preset styles
+\fancyhf{}
+% Remove header rule
+\renewcommand{\headrulewidth}{0pt}
+
+% Define the width for a horizontal rule to equal line width
+\let\OldRule\rule
+\renewcommand{\rule}[2]{\OldRule{\linewidth}{#2}}
+
+% Define a hline with custom thickness
+\makeatletter
+\def\hlinewd#1{%
+   {\ifnum0=`}\fi\color{PrettyGray}\hrule \@height #1 \futurelet
+   \reserved@a\@xhline}
+\makeatother
+
+% Introduce shortcut "name"
+\def\name{$firstname$ $lastname$}
+
+% Following metadata will show up in the PDF properties
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks = true,
+  urlcolor = red,
+  linkcolor = magenta,
+  pdfauthor = {\name},
+  pdfkeywords = {$for(skills)$$skills.skill$$sep$, $endfor$},
+  pdftitle = {Resume - \name},
+  pdfsubject = {Resume - \name},
+  pdfpagemode = UseNone
+}
+
+\begin{document}
+
+\begin{minipage}{0.6\textwidth}
+  % Place name at left
+  {\fontsize{36}{44}\selectfont
+  \textbf{\MakeUppercase{$firstname$}}
+  \\[18pt]
+  \textbf{\MakeUppercase{$lastname$}}}
+  \\[13pt]
+  {\color{Redish}
+  {\fontsize{14}{18}\selectfont
+  \textbf{\MakeUppercase{$title$}}}}
+  \\[7pt]
+  {\fontsize{12}{15}\selectfont
+  $if(degree)$$degree$$endif$
+  $if(institute)$
+    \\[2pt]
+    $institute$
+  $endif$
+  }
+\end{minipage}
+% Don't use empty lines after \end and the next \begin{minipage}.
+{\color{PrettyGray}{\vrule width 2pt}}
+\begin{minipage}{0.4\textwidth}
+
+  \begingroup
+  \setstretch{1.2}
+  \leftskip=20pt
+  \includegraphics{\name}
+  \par
+  \endgroup
+
+\end{minipage}
+
+\vspace{0.4cm}
+
+% Horizontal rule
+\noindent\textcolor{AlmostBlack}{\rule{}{0.5mm}}
+
+% Markdown copy text is placed here
+\setstretch{1.3}
+$body$
+
+% Another horizontal rule
+\noindent\textcolor{AlmostBlack}{\rule{}{0.5mm}}
+
+% Projects are listed here
+\fontsize{12}{15}\selectfont{Projects}
+
+\newcounter{AmountOfProjects}
+$for(projects)$
+  \addtocounter{AmountOfProjects}{1}
+$endfor$
+
+\newcounter{AmountOfServices}
+\newcounter{CurrentServiceIndex}
+
+\newcounter{CurrentProjectIndex}
+$for(projects)$
+  \addtocounter{CurrentProjectIndex}{1}%
+  \setcounter{AmountOfServices}{0}%
+  \setcounter{CurrentServiceIndex}{0}%
+  $for(projects.services)$
+    \addtocounter{AmountOfServices}{1}%
+  $endfor$
+  % Project customer name
+  \begin{tabular}[t]{l}
+    \begin{minipage}[t]{0.3\textwidth}%
+      {\color{Redish}{%
+      \fontsize{14}{14}%
+      \selectfont%
+      \textbf{\MakeUppercase{%
+      $projects.cust$}}}} \\
+      $projects.span$
+    \end{minipage}
+    \begin{minipage}[t]{0.65\textwidth}%
+      $for(projects.services)$
+        \addtocounter{CurrentServiceIndex}{1}%
+        {\color{AlmostBlack}{%
+        \fontsize{14}{14}%
+        \selectfont%
+        \textbf{%
+        $projects.services.name$}}} \\
+        $if(projects.services.desc)$$projects.services.desc$ \\$endif$
+        $projects.services.role$ \\
+        $projects.services.tech$ \\
+        % Add some space between different services
+        \ifthenelse{\value{CurrentServiceIndex}=\value{AmountOfServices}}{}{%
+          \\[-0.5cm]
+        }%
+      $endfor$
+    \end{minipage}
+  \end{tabular} \\
+  % Use different color horizontal rule for the last item in the list
+  \ifthenelse{\value{CurrentProjectIndex}=\value{AmountOfProjects}}{%
+    \noindent\textcolor{AlmostBlack}{\rule{}{0.5mm}}
+  }{%
+    \noindent\textcolor{PrettyGray}{\rule{}{0.5mm}}
+  }%
+$endfor$
+
+\vspace{0.3cm}
+
+% And previous jobs are listed here
+\begin{absolutelynopagebreak}
+\fontsize{12}{15}\selectfont{Experience}
+
+\newcounter{AmountOfJobs}
+$for(jobs)$
+  \addtocounter{AmountOfJobs}{1}
+$endfor$
+
+\newcounter{CurrentJobIndex}
+$for(jobs)$
+  \addtocounter{CurrentJobIndex}{1}
+  % Company name
+  \begin{tabular}[t]{l}
+    \begin{minipage}[t]{0.4\textwidth}%
+      {\color{Redish}{%
+      \fontsize{14}{14}%
+      \selectfont%
+      \textbf{\MakeUppercase{%
+      $jobs.comp$}}}} \\
+      $jobs.span$ \\
+    \end{minipage}
+    \begin{minipage}[t]{0.65\textwidth}%
+      {\color{AlmostBlack}{%
+      \fontsize{14}{14}%
+      \selectfont%
+      \textbf{%
+      $jobs.role$}}} \\
+      $jobs.tech$ \\
+    \end{minipage}
+  \end{tabular} \\
+  % Use different color horizontal rule for the last item in the list
+  \ifthenelse{\value{CurrentJobIndex}=\value{AmountOfJobs}}{%
+    \noindent\textcolor{AlmostBlack}{\rule{}{0.5mm}}
+  }{%
+    \noindent\textcolor{PrettyGray}{\rule{}{0.5mm}}
+  }%
+$endfor$
+\end{absolutelynopagebreak}
+
+\vspace{0.3cm}
+
+% Skills comes here
+\begin{absolutelynopagebreak}
+\fontsize{12}{15}\selectfont{Skills}
+
+\includegraphics{{"\name-skills"}.pdf}
+\end{absolutelynopagebreak}
+
+\end{document}
