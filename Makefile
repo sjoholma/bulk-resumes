@@ -21,11 +21,7 @@ endef
 
 define chart
 	cp "$(TEMPLATEDIR)/chart.html" "$(AUXDIR)/$(2)-skills.html"; \
-	node "$(TEMPLATEDIR)"/pdf.js \
-	"$(1)" \
-	"$(AUXDIR)"/"$(2)"-skills.js \
-	"file://$(AUXDIR)"/"$(2)"-skills.html \
-	"$(AUXDIR)"/"$(2)"-skills.pdf;
+	node "$(TEMPLATEDIR)"/pdf.js "$(1)" "$(AUXDIR)"/"$(2)"-skills;
 endef
 
 define pdf
