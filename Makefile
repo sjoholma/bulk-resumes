@@ -23,8 +23,8 @@ define chart
 	--template "$(TEMPLATEDIR)"/chart.html \
 	--from markdown_github+yaml_metadata_block \
 	--output "$(AUXDIR)"/"$(2)"-skills.html; \
-	phantomjs "$(TEMPLATEDIR)"/chart.js \
-	"$(AUXDIR)"/"$(2)"-skills.html \
+	node "$(TEMPLATEDIR)"/map.js \
+	"file://$(AUXDIR)"/"$(2)"-skills.html \
 	"$(AUXDIR)"/"$(2)"-skills.pdf;
 endef
 
