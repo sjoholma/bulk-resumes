@@ -20,12 +20,10 @@ define mkdirs
 endef
 
 define chart
-	pandoc "$(1)" \
-	--metadata title="Resume-$(2)" \
-	--template "$(TEMPLATEDIR)"/chart.html \
-	--from markdown_strict+yaml_metadata_block \
-	--output "$(AUXDIR)"/"$(2)"-skills.html; \
+	cp "$(TEMPLATEDIR)/chart.html" "$(AUXDIR)/$(2)-skills.html"; \
 	node "$(TEMPLATEDIR)"/pdf.js \
+	"$(1)" \
+	"$(AUXDIR)"/"$(2)"-skills.js \
 	"file://$(AUXDIR)"/"$(2)"-skills.html \
 	"$(AUXDIR)"/"$(2)"-skills.pdf;
 endef
