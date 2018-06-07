@@ -22,7 +22,7 @@ define chart
 	pandoc "$(1)" \
 	--metadata title="Resume-$(2)" \
 	--template "$(TEMPLATEDIR)"/chart.html \
-	--from markdown_github+yaml_metadata_block \
+	--from markdown_strict+yaml_metadata_block \
 	--output "$(AUXDIR)"/"$(2)"-skills.html; \
 	node "$(TEMPLATEDIR)"/map.js \
 	"file://$(AUXDIR)"/"$(2)"-skills.html \
@@ -32,7 +32,7 @@ endef
 define pdf
 	pandoc "$(1)" \
 	--template "$(TEMPLATEDIR)"/template.tex \
-	--from markdown_github+yaml_metadata_block \
+	--from markdown_strict+yaml_metadata_block \
 	--output "$(OUTPUTDIR)"/Resume-"$(2)".pdf;
 endef
 

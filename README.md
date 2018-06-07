@@ -1,5 +1,5 @@
 # Bulk resume generator
-Transforms github-markdown+yaml resumes into PDF via pandoc and puppeteer. 
+Transforms markdown+yaml resumes into PDF via pandoc and puppeteer. 
 Using LaTeX and Google Charts for template.
 
 ## Setup
