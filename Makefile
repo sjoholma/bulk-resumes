@@ -8,9 +8,10 @@ all:
 	@$(call mkdirs)
 	@for resume in $(INPUTDIR)/*$(name)*.md; \
 	do \
+	filepath=$${resume%.*}; \
 	filename="$${resume##*/}"; \
-	$(call chart,$$resume,$${filename%.md}) \
-	$(call pdf,$$resume,$${filename%.md}) \
+	$(call chart,$$filepath.yaml,$${filename%.md}) \
+	$(call pdf,$$filepath.md,$$filepath.yaml,$${filename%.md}) \
 	done
 
 define mkdirs
@@ -24,16 +25,16 @@ define chart
 	--template "$(TEMPLATEDIR)"/chart.html \
 	--from markdown_strict+yaml_metadata_block \
 	--output "$(AUXDIR)"/"$(2)"-skills.html; \
-	node "$(TEMPLATEDIR)"/map.js \
+	node "$(TEMPLATEDIR)"/pdf.js \
 	"file://$(AUXDIR)"/"$(2)"-skills.html \
 	"$(AUXDIR)"/"$(2)"-skills.pdf;
 endef
 
 define pdf
-	pandoc "$(1)" \
+	pandoc "$(1)" "$(2)" \
 	--template "$(TEMPLATEDIR)"/template.tex \
 	--from markdown_strict+yaml_metadata_block \
-	--output "$(OUTPUTDIR)"/Resume-"$(2)".pdf;
+	--output "$(OUTPUTDIR)"/Resume-"$(3)".pdf;
 endef
 
 .PHONY: all
