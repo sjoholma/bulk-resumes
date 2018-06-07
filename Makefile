@@ -20,6 +20,7 @@ endef
 
 define chart
 	pandoc "$(1)" \
+	--metadata title="Resume-$(2)" \
 	--template "$(TEMPLATEDIR)"/chart.html \
 	--from markdown_github+yaml_metadata_block \
 	--output "$(AUXDIR)"/"$(2)"-skills.html; \
